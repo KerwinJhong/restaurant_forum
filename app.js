@@ -1,7 +1,8 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
-const bodyParser = require('body-parser');
-const db = require('./models')
+const Handlebars = require('handlebars')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
+const bodyParser = require('body-parser')
 const app = express()
 const port = process.env.PORT || 3000
 const flash = require('connect-flash')
@@ -10,7 +11,12 @@ const passport = require('./config/passport')
 const methodOverride = require('method-override')
 if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
 
-app.engine('handlebars', exphbs({ defaultLayout: 'main', helpers: require('./config/handlebars-helpers') }))
+//express startup
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main',
+  handlebars: allowInsecurePrototypeAccess(Handlebars),
+  helpers: require('./config/handlebars-helpers')
+}));
 app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
